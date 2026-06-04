@@ -1,0 +1,632 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - PersonalityPro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --yellow-main: #FFD84D;
+            --yellow-soft: #FFF6CC;
+            --yellow-border: #FFE08A;
+            --black: #111111;
+            --black-soft: #1f1f1f;
+            --gray-dark: #333333;
+            --gray-medium: #666666;
+            --gray-light: #E5E5E5;
+            --white: #ffffff;
+
+            /* Aliases for component use */
+            --yellow: var(--yellow-main);
+            --yellow-dark: #e6c200;
+            --border: var(--yellow-border);
+            --error: #c0392b;
+            --success: #1e8c45;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ── LEFT PANEL ── */
+        .left-side {
+            width: 42%;
+            background: var(--black);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            padding: 48px 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-side::before {
+            content: '';
+            position: absolute;
+            top: -120px; right: -120px;
+            width: 380px; height: 380px;
+            background: radial-gradient(circle, rgba(255,216,77,0.18) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .left-side::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; left: -80px;
+            width: 280px; height: 280px;
+            background: radial-gradient(circle, rgba(255,216,77,0.10) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+            color: var(--white);
+            text-decoration: none;
+            z-index: 1;
+        }
+
+        .logo svg { flex-shrink: 0; }
+
+        .left-content {
+            margin-top: auto;
+            margin-bottom: auto;
+            z-index: 1;
+        }
+
+        .left-content h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(28px, 3vw, 40px);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 18px;
+            color: var(--white);
+        }
+
+        .left-content h1 span {
+            color: var(--yellow-main);
+        }
+
+        .left-content > p {
+            color: var(--gray-light);
+            font-size: 16px;
+            line-height: 1.65;
+            max-width: 100%;
+            width: 100%;
+            margin-bottom: 40px;
+            opacity: 0.75;
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 15px;
+            color: var(--gray-light);
+        }
+
+        .feature-icon {
+            width: 38px; height: 38px;
+            background: rgba(255,216,77,0.10);
+            border: 1px solid rgba(255,224,138,0.28);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .right-side {
+            flex: 1;
+            background: var(--yellow-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 40px;
+            overflow-y: auto;
+        }
+
+        .login-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 48px 48px;
+            width: 100%;
+            max-width: 620px;
+            box-shadow: 0 2px 24px rgba(17,17,17,0.08), 0 0 0 1px rgba(255,224,138,0.5);
+            animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-header {
+            margin-bottom: 28px;
+        }
+
+        .login-header h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--black);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: var(--gray-medium);
+            font-size: 16px;
+        }
+
+        /* ── FORM ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-dark);
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-medium);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            border: 1.5px solid var(--yellow-border);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            color: var(--black);
+            background: var(--yellow-soft);
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--yellow-main);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(255,216,77,0.28);
+        }
+
+        input::placeholder { color: var(--gray-medium); opacity: 0.55; }
+
+        select { cursor: pointer; }
+
+        /* Checkbox group for interests */
+        .interests-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .interest-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border: 1.5px solid var(--yellow-border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.18s;
+            font-size: 14px;
+            color: var(--gray-dark);
+            background: var(--yellow-soft);
+            user-select: none;
+        }
+
+        .interest-chip input[type="checkbox"] {
+            width: 16px; height: 16px;
+            padding: 0;
+            accent-color: var(--black);
+            border-radius: 4px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .interest-chip:has(input:checked) {
+            border-color: var(--yellow-main);
+            background: var(--yellow-main);
+            color: var(--black);
+            font-weight: 600;
+        }
+
+        /* Messages */
+        .msg {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .msg.error   { background: #fff0f0; color: #c0392b; border: 1px solid #f5c6c6; }
+        .msg.success { background: #f0fff4; color: #1e8c45; border: 1px solid #b2dfcb; }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--black);
+            color: var(--yellow-main);
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            margin-top: 22px;
+            letter-spacing: -0.2px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--black-soft);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(17,17,17,0.22);
+        }
+
+        .btn-submit:active:not(:disabled) { transform: translateY(0); }
+
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .btn-submit .arrow {
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+
+        .btn-submit:hover:not(:disabled) .arrow { transform: translateX(4px); }
+
+        .terms {
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--gray-medium);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .terms a { color: var(--black); font-weight: 600; text-decoration: none; }
+        .terms a:hover { text-decoration: underline; }
+
+        .back-link {
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .back-link a {
+            color: var(--gray-medium);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .back-link a:hover { color: var(--black); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+
+            .left-side {
+                width: 100%;
+                padding: 28px 24px 36px;
+                min-height: auto;
+            }
+
+            .left-content { margin: 24px 0 0; }
+            .left-content h1 { font-size: 26px; }
+            .features-list { display: none; }
+
+            .right-side { padding: 28px 16px; }
+
+            .login-card { padding: 28px 22px; border-radius: 18px; }
+
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: 1; }
+            .interests-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT PANEL -->
+    <div class="left-side">
+        <div class="logo">
+            <svg width="38" height="38" viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="18" fill="#FFD84D"/>
+                <path d="M20 8L24 16L32 18L26 24L28 32L20 28L12 32L14 24L8 18L16 16L20 8Z" fill="#111111"/>
+            </svg>
+            PersonalityPro
+        </div>
+
+        <div class="left-content">
+            <h1>Discover Your <span>True Career</span> Path</h1>
+            <p>Join thousands who have found clarity and direction through our research-based personality assessment.</p>
+
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon">⏱️</div>
+                    <span>5-10 minute interactive assessment</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <span>Personalized career recommendations</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💡</div>
+                    <span>Detailed personality insights</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <span>Research-backed results</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-side">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Get Started 🚀</h2>
+                <p>Fill in your details to begin the assessment</p>
+            </div>
+
+            <div class="msg error"   id="error-message"></div>
+            <div class="msg success" id="success-message"></div>
+
+            <div class="form-grid">
+
+                <!-- Full Name -->
+                <div class="form-group full">
+                    <label for="full-name">Full Name</label>
+                    <div class="input-wrap">
+                        <span class="icon">👤</span>
+                        <input type="text" id="full-name" placeholder="e.g. Arun Kumar" autocomplete="name" />
+                    </div>
+                </div>
+
+                <!-- Qualification -->
+                <div class="form-group full">
+                    <label for="qualification">Qualification</label>
+                    <div class="input-wrap">
+                        <span class="icon">🎓</span>
+                        <select id="qualification">
+                            <option value="" disabled selected>Select your qualification</option>
+                            <optgroup label="School">
+                                <option value="class-10">Class 10 (SSLC)</option>
+                                <option value="class-11">Class 11</option>
+                                <option value="class-12">Class 12 (HSC / +2)</option>
+                            </optgroup>
+                            <optgroup label="Undergraduate">
+                                <option value="diploma">Diploma</option>
+                                <option value="be-btech">BE / B.Tech</option>
+                                <option value="bsc">B.Sc</option>
+                                <option value="ba">BA</option>
+                                <option value="bcom">B.Com</option>
+                                <option value="bba">BBA</option>
+                                <option value="other-ug">Other UG</option>
+                            </optgroup>
+                            <optgroup label="Postgraduate">
+                                <option value="me-mtech">ME / M.Tech</option>
+                                <option value="msc">M.Sc</option>
+                                <option value="mba">MBA</option>
+                                <option value="mca">MCA</option>
+                                <option value="other-pg">Other PG</option>
+                            </optgroup>
+                            <option value="phd">PhD / Research</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email ID</label>
+                    <div class="input-wrap">
+                        <span class="icon">✉️</span>
+                        <input type="email" id="email" placeholder="you@email.com" autocomplete="email" />
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-wrap">
+                        <span class="icon">📱</span>
+                        <input type="tel" id="phone" placeholder="+91 98765 43210" autocomplete="tel" maxlength="15" />
+                    </div>
+                </div>
+
+                <!-- College / School -->
+                <div class="form-group full">
+                    <label for="institution">College / School</label>
+                    <div class="input-wrap">
+                        <span class="icon">🏫</span>
+                        <input type="text" id="institution" placeholder="Name of your institution" />
+                    </div>
+                </div>
+
+                <!-- Area of Interest -->
+                <div class="form-group full">
+                    <label>Area of Interest <span style="text-transform:none;font-weight:400;color:#9ca3af;">(select all that apply)</span></label>
+                    <div class="interests-grid">
+                        <label class="interest-chip"><input type="checkbox" value="technology"> 💻 Technology</label>
+                        <label class="interest-chip"><input type="checkbox" value="science"> 🔬 Science</label>
+                        <label class="interest-chip"><input type="checkbox" value="arts"> 🎨 Arts & Design</label>
+                        <label class="interest-chip"><input type="checkbox" value="business"> 💼 Business</label>
+                        <label class="interest-chip"><input type="checkbox" value="medicine"> 🩺 Medicine</label>
+                        <label class="interest-chip"><input type="checkbox" value="education"> 📚 Education</label>
+                        <label class="interest-chip"><input type="checkbox" value="law"> ⚖️ Law</label>
+                        <label class="interest-chip"><input type="checkbox" value="sports"> 🏅 Sports</label>
+                    </div>
+                </div>
+
+            </div><!-- /form-grid -->
+
+            <button class="btn-submit" id="submit-btn">
+                Start Assessment <span class="arrow">→</span>
+            </button>
+
+            <p class="terms">
+                By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
+
+            <div class="back-link">
+                <a href="/">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.origin + '/api';
+
+        function showMsg(type, text) {
+            document.getElementById('error-message').style.display   = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            const el = document.getElementById(type + '-message');
+            el.textContent = text;
+            el.style.display = 'flex';
+        }
+
+        function getInterests() {
+            return [...document.querySelectorAll('.interests-grid input:checked')]
+                .map(cb => cb.value);
+        }
+
+        function validatePhone(phone) {
+            return /^[\d\s\+\-]{7,15}$/.test(phone.trim());
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', async () => {
+            const fullName    = document.getElementById('full-name').value.trim();
+            const qualification = document.getElementById('qualification').value;
+            const email       = document.getElementById('email').value.trim();
+            const phone       = document.getElementById('phone').value.trim();
+            const institution = document.getElementById('institution').value.trim();
+            const interests   = getInterests();
+            const btn         = document.getElementById('submit-btn');
+
+            // ── Validation ──
+            if (!fullName)         return showMsg('error', '⚠️ Please enter your full name.');
+            if (!qualification)    return showMsg('error', '⚠️ Please select your qualification.');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                                   return showMsg('error', '⚠️ Please enter a valid email address.');
+            if (!phone || !validatePhone(phone))
+                                   return showMsg('error', '⚠️ Please enter a valid phone number.');
+            if (!institution)      return showMsg('error', '⚠️ Please enter your college or school name.');
+            if (interests.length === 0)
+                                   return showMsg('error', '⚠️ Please select at least one area of interest.');
+
+            // ── Submit ──
+            btn.disabled = true;
+            btn.innerHTML = '<span style="animation:spin 0.8s linear infinite;display:inline-block">⏳</span> &nbsp;Submitting...';
+
+            const payload = { fullName, qualification, email, phone, institution, interests };
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/auth/register/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok && data.success) {
+                    localStorage.setItem('authToken', data.token || '');
+                    localStorage.setItem('user', JSON.stringify(data.user || payload));
+                    localStorage.setItem('userName', fullName);
+
+                    showMsg('success', '✓ Details saved! Redirecting to assessment...');
+                    setTimeout(() => {
+                        const redirect = new URLSearchParams(window.location.search).get('redirect');
+                        window.location.href = redirect || '/questions/';
+                    }, 1200);
+                } else {
+                    showMsg('error', data.error || 'Something went wrong. Please try again.');
+                    resetBtn();
+                }
+            } catch (_) {
+                // If the API is unavailable, still allow navigation (demo mode)
+                localStorage.setItem('user', JSON.stringify(payload));
+                localStorage.setItem('userName', fullName);
+                showMsg('success', '✓ Details saved! Redirecting to assessment...');
+                setTimeout(() => {
+                    window.location.href = new URLSearchParams(window.location.search).get('redirect') || '/assessment/';
+                }, 1200);
+            }
+        });
+
+        function resetBtn() {
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = false;
+            btn.innerHTML = 'Start Assessment <span class="arrow">→</span>';
+        }
+    </script>
+
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</body>
+</html>
